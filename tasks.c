@@ -413,7 +413,7 @@ void view_tasks(const char *username){
                 if (data[i].priority == 1) printf(RED);
                 else if (data[i].priority == 2) printf(YELLOW);
                 else printf(GREEN);
-                printf("⦿ %s(%d)\t\t STATUS: %s\n\t⇥ %s\n", data[i].title, data[i].priority, data[i].status==TASK_COMPLETED?GREEN : YELLOW, data[i].status==TASK_COMPLETED? "Completed!" : "Pending",data[i].description); //Colour code title based on priority; priority marked as int for now, needs to be changed to string
+                printf("⦿ %s(%d)                -> STATUS: %s%s%s\n\t⇥ %s\n", data[i].title, data[i].priority, data[i].status==TASK_COMPLETED?GREEN : YELLOW, data[i].status==TASK_COMPLETED? "COMPLETED!" : "PENDING", RESET, data[i].description); //Colour code title based on priority; priority marked as int for now, needs to be changed to string
                 if(data[i].wtype==1) printf("\t⇥ Type: Personal\n");
                 else printf("\t⇥ Type: Work\n");
                 flag = 1;
@@ -446,7 +446,7 @@ void view_tasks(const char *username){
                     if (data[i].priority == 1) printf(RED);
                     else if (data[i].priority == 2) printf(YELLOW);
                     else printf(GREEN);
-
+                    
                     // Print task details with indentation
                     printf("\t\t\t  ⦿ %s (%d)\n", data[i].title, data[i].priority);
                     printf("\t\t\t\t⇥ %s\n", data[i].description);
@@ -458,9 +458,12 @@ void view_tasks(const char *username){
                     if (task_year < current_year_int || (task_year == current_year_int && task_month < current_month_int) || (task_year == current_year_int && task_month == current_month_int && task_day < current_day_int)) {
                         is_overdue = 1;
                     }
-                    if (is_overdue) {
-                        printf(RED "                -> STATUS: OVERDUE\n" RESET);
-                    }
+
+                    //HERE->KEEP ABOVE VERSION OR BELOW?
+                    if(data[i].status==TASK_OVERDUE) printf(RED "                -> STATUS: OVERDUE\n" RESET);
+                    //if (is_overdue) printf(RED "                -> STATUS: OVERDUE\n" RESET);
+                    else if(data[i].status==TASK_COMPLETED) printf(GREEN "                -> STATUS: COMPLETED!\n" RESET);
+                    else printf(YELLOW "                -> STATUS: PENDING\n" RESET);
                     printf(RESET "\n"); // Add a blank line after each task
                     tasks_on_day++;
                 }
@@ -504,7 +507,13 @@ void view_tasks(const char *username){
 
         for (int day = 1; day<=days_of_month; day++) {
             // Print the day with an asterisk if it has task
-            if (has_task[day]) printf(YELLOW " %3d* " RESET, day);
+            if (has_task[day]) {
+                if(data[i].status==TASK_COMPLETED) printf(GREEN);
+                else if(data[i].status==TASK_OVERDUE) printf(RED);
+                else printf(YELLOW);
+                printf( " %3d* ", day);
+                printf(RESET);
+            }
             else printf(" %3d  ", day);
 
             // If it's Saturday print a newline
@@ -522,7 +531,9 @@ void view_tasks(const char *username){
                         if (data[i].priority == 1) printf(RED);
                         else if (data[i].priority == 2) printf(YELLOW);
                         else printf(GREEN);
-                        printf("⦿ [%02d-%02d-%04d] %s\n", task_day, task_month, task_year, data[i].title);
+                        printf("⦿ [%02d-%02d-%04d] %s\t\t STATUS: %s%s%s\n", task_day, task_month, task_year, data[i].status == TASK_COMPLETED ? GREEN :
+                       data[i].status == TASK_PENDING   ? YELLOW : RED,
+                       data[i].status == TASK_COMPLETED ? "COMPLETED!" : data[i].status == TASK_PENDING ?"PENDING" :"OVERDUE",RESET, data[i].title);
                     }
                 }
             }
@@ -1049,6 +1060,7 @@ void reminders(const char *username){
     }
 
 }
+
 
 
 
