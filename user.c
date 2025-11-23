@@ -395,14 +395,13 @@ void showLeaderboard() {
 // In user.c
 
 void update_reward_score(const char* username, int points_to_add) {
-    // 1. Load all users from users.txt into an array of User structs.
-    //    (Your loadUsers function already does this).
+    // Load all users from users.txt into an array
     User* users = NULL;
     int count = 0;
     loadUsers(&users, &count);
 
     int user_index = -1;
-    // 2. Find the current user in the array.
+    //find the current user 
     for (int i = 0; i < count; i++) {
         if (strcmp(users[i].name, username) == 0) {
             user_index = i;
@@ -415,10 +414,9 @@ void update_reward_score(const char* username, int points_to_add) {
         return; // Should not happen if user is logged in
     }
 
-    // 3. Add the points to their score.
+
     users[user_index].reward += points_to_add;
 
-    // 4. Rewrite the entire users.txt file with the updated data.
     FILE* fp = fopen(FILE_NAME, "w"); // "w" to overwrite
     if (!fp) { /* handle error */ return; }
     
@@ -484,4 +482,5 @@ void update_reward_score(const char* username, int points_to_add) {
                 printf("Invalid choice.\n");
         }
     }
+
 }*/
