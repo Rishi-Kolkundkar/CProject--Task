@@ -899,7 +899,7 @@ int complete_task(const char* username, int task_id) {
     }
     
     int task_index = -1;
-    // 2. Find the task with the given task_id.
+    // Find the task with the given task_id
     for (int i = 0; i < total_tasks; i++) {
         if (data[i].id == task_id && data[i].status == TASK_PENDING) {
             task_index = i;
@@ -912,13 +912,18 @@ int complete_task(const char* username, int task_id) {
         return 0;
     }
 
-  
+    
     data[task_index].status = TASK_COMPLETED;
 
     
     int points_earned = 0;
     
-    if (1/* task is NOT overdue */) {
+    char current_day[3], current_month[3], current_year[5];
+    current_date(current_day, current_month, current_year);
+    
+    if (strncmp(data[i].due_date, current_year, 4) == 0 &&
+                strncmp(data[i].due_date + 5, current_month, 2) == 0 &&
+                strncmp(data[i].due_date + 8, current_day, 2) == 0) {
         points_earned = 10; // Base points for on-time completion
         if (data[task_index].priority == 1) {
             points_earned += 5; // Bonus for high-priority tasks
@@ -1044,6 +1049,7 @@ void reminders(const char *username){
     }
 
 }
+
 
 
 
