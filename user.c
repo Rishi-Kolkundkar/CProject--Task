@@ -287,21 +287,18 @@ void loadUsers(User **list, int *count) {
 
     int c = 0;
     char a[32], b[65];
-    int r;
+    int r,d;
 
-    while (fscanf(fp, "%s %s %d", a, b, &r) == 3)
+    while (fscanf(fp, "%s %s %d %d", a, b, &r,&d) == 4)
         c++;
 
-    rewind(fp);
+    rewind(fp);  //kind of seek() function in python
 
     *list = malloc(sizeof(User) * c);
     *count = c;
 
     for (int i = 0; i < c; i++) {
-        fscanf(fp, "%s %s %d",
-               (*list)[i].name,
-               (*list)[i].password,
-               &(*list)[i].reward);
+        fscanf(fp, "%s %s %d %d",(*list)[i].name,(*list)[i].password,&(*list)[i].reward,&(*list)[i].DOB);
     }
 
     fclose(fp);
@@ -328,7 +325,7 @@ int login(char* username_out) {
 
         char file_user[32], file_pass[65];
         int success = 0,reward;
-        while (fscanf(fp, "%s %s %d", file_user, file_pass,&reward) == 3) {
+        while (fscanf(fp, "%s %s %d %d", file_user, file_pass,&reward) == 3) {
             if (strcmp(input_user, file_user) == 0 &&
                 strcmp(input_pass_hash, file_pass) == 0) {
                 strcpy(username_out, input_user);
@@ -361,6 +358,8 @@ int login(char* username_out) {
 void showProfile(User u) {
     printf("\n--- PROFILE ---\n");
     printf("Name: %s\n", u.name);
+    printf("DOB(DD/MM/YYYY): %d\n", u.DOB);
+
     printf("Reward: %d\n", u.reward);
     printf("---------------\n");
 }
@@ -501,3 +500,4 @@ void update_reward_score(const char* username, int points_to_add) {
     }
 
 }*/
+
