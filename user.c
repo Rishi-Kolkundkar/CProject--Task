@@ -325,7 +325,7 @@ int login(char* username_out) {
 
         char file_user[32], file_pass[65];
         int success = 0,reward;
-        while (fscanf(fp, "%s %s %d %d", file_user, file_pass,&reward) == 3) {
+        while (fscanf(fp, "%s %s %d %d", file_user, file_pass,&reward) == 4) {
             if (strcmp(input_user, file_user) == 0 &&
                 strcmp(input_pass_hash, file_pass) == 0) {
                 strcpy(username_out, input_user);
@@ -500,4 +500,5 @@ void update_reward_score(const char* username, int points_to_add) {
     }
 
 }*/
+
 
