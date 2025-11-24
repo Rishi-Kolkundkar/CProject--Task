@@ -592,6 +592,8 @@ void view_tasks(const char *username){
             if(task_month==current_month_int  && task_year==current_year_int){
                 has_task[task_day] = true;
                 flag = 1;
+                if (data[i].status == TASK_OVERDUE) day_status[task_day] = TASK_OVERDUE;
+                else if (data[i].status == TASK_PENDING && day_status[task_day] != TASK_OVERDUE) day_status[task_day] = TASK_PENDING;
             }
         }
 
@@ -616,8 +618,8 @@ void view_tasks(const char *username){
         for (int day = 1; day<=days_of_month; day++) {
             // Print the day with an asterisk if it has task
             if (has_task[day]) {
-                if(data[day].status==TASK_COMPLETED) printf(GREEN);
-                else if(data[day].status==TASK_OVERDUE) printf(RED);
+                if(day_status[day]==TASK_COMPLETED) printf(GREEN);
+                else if(day_status[day]==TASK_OVERDUE) printf(RED);
                 else printf(YELLOW);
                 printf( " %3d* ", day);
                 printf(RESET);
@@ -1172,6 +1174,7 @@ void reminders(const char *username){
     }
 
 }
+
 
 
 
