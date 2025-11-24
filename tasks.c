@@ -454,6 +454,47 @@ void set_status(Task* task){
     else task->status = TASK_PENDING;
 }
 
+void write_status(const char* username) {
+    char fname[64]; 
+    fnamegen(username, fname, sizeof(fname));
+    
+    FILE *fh = fopen(fname, "rb");
+    if (fh == NULL) {
+        perror("Error");
+        return;
+    }
+    int total_tasks;
+    if (fread(&total_tasks, sizeof(int), 1, fh) != 1) {
+        fclose(fh);
+        return;
+    }
+    if(total_tasks==0){
+        printf("You haven't created any tasks!\n");
+        return;
+    }
+    Task* data = (Task*) malloc(total_tasks * sizeof(Task));
+    fread(data, sizeof(Task), total_tasks, fh);
+    fclose(fh); 
+
+    
+    int changed = 0;
+    for (int i = 0; i < total_tasks; i++) {
+        TaskStatus old_status = data[i].status;
+        set_status(&data[i]); //Update based on today's date
+        
+        if (data[i].status != old_status) changed = 1;
+    }
+
+    // Only write to file if something changed
+    if(changed){
+        fh = fopen(fname, "wb"); // Open write mode
+        fwrite(&total_tasks, sizeof(int), 1, fh);
+        fwrite(data, sizeof(Task), total_tasks, fh);
+        fclose(fh);
+    }
+
+    free(data);
+}
 
 void view_tasks(const char *username){
     //on user selecting option to view tasks give 3 options day wise, week wise and by month
@@ -507,7 +548,6 @@ void view_tasks(const char *username){
         //If there are no tasks due today print the same
         int flag = 0, flag1 = 0;
         for(int i = 0; i<total_tasks; i++){
-            set_status(&data[i]);
             if(strncmp(data[i].due_date, current_year, 4) == 0 &&
                 strncmp(data[i].due_date + 5, current_month, 2) == 0 &&
                 strncmp(data[i].due_date + 8, current_day, 2) == 0){
@@ -538,7 +578,6 @@ void view_tasks(const char *username){
             printf("%-9s -->", days_of_week[day_num]); //-9s is for alignment
             int tasks_on_day = 0;
             for (int i = 0; i < total_tasks; i++) {
-                set_status(&data[i]);
                 int task_year, task_month, task_day;
                 sscanf(data[i].due_date, "%d-%d-%d", &task_year, &task_month, &task_day);
 
@@ -562,12 +601,11 @@ void view_tasks(const char *username){
                     else printf("\t\t\t\t⇥ Type: Work\n");
 
                     // Check for overdue
-                    int is_overdue = 0;
-                    if (task_year < current_year_int || (task_year == current_year_int && task_month < current_month_int) || (task_year == current_year_int && task_month == current_month_int && task_day < current_day_int)) {
-                        is_overdue = 1;
-                    }
+                    //int is_overdue = 0;
+                    //if (task_year < current_year_int || (task_year == current_year_int && task_month < current_month_int) || (task_year == current_year_int && task_month == current_month_int && task_day < current_day_int)) {
+                    //    is_overdue = 1;
+                    //}
 
-                    //HERE->KEEP ABOVE VERSION OR BELOW?
                     if(data[i].status==TASK_OVERDUE) printf(RED "                -> STATUS: OVERDUE\n" RESET);
                     //if (is_overdue) printf(RED "                -> STATUS: OVERDUE\n" RESET);
                     else if(data[i].status==TASK_COMPLETED) printf(GREEN "                -> STATUS: COMPLETED!\n" RESET);
@@ -829,6 +867,7 @@ void update_task(const char *username){
                     temp_date[strcspn(temp_date, "\n")] = 0; 
                     if(is_valid_date(temp_date)==1) {
                         strcpy(data[task_index].due_date, temp_date);
+                        set_status(&data[task_index]);
                         break;
                     }
                     else printf("Invalid date format! Please use YYYY-MM-DD.\n");
@@ -1174,6 +1213,7 @@ void reminders(const char *username){
     }
 
 }
+
 
 
 
