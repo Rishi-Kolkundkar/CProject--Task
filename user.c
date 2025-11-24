@@ -210,10 +210,10 @@ int usernameExists(const char *name) {
     if (!fp) return 0;
 
     char uname[32], pwd[65];
-    int r;
+    int r,dob;
 
-    while (fscanf(fp, "%s %s %d", uname, pwd, &r) == 3) {
-        if (strcmp(uname, name) == 0) {
+    while (fscanf(fp, "%s %s %d %d", uname, pwd, &r,&dob) == 4) {
+        if (strcmp(uname, name) == 0){
             fclose(fp);
             return 1;  // found
         }
@@ -324,10 +324,10 @@ int login(char* username_out) {
         }
 
         char file_user[32], file_pass[65];
-        int success = 0,reward,dob;
-        while (fscanf(fp, "%s %s %d %d", file_user, file_pass,&reward,&dob) == 4) {
+        int success = 0,reward;
+        while (fscanf(fp, "%s %s %d %d", file_user, file_pass,&reward) == 3) {
             if (strcmp(input_user, file_user) == 0 &&
-                strcmp(input_pass_hash, file_pass) == 0 ) {
+                strcmp(input_pass_hash, file_pass) == 0) {
                 strcpy(username_out, input_user);
                 success = 1;
                 break;
@@ -437,7 +437,7 @@ void update_reward_score(const char* username, int points_to_add) {
     if (!fp) { /* handle error */ return; }
     
     for (int i = 0; i < count; i++) {
-        fprintf(fp, "%s %s %d\n", users[i].name, users[i].password, users[i].reward);
+        fprintf(fp, "%s %s %d %d\n", users[i].name, users[i].password, users[i].reward ,user[i].DOB);
     }
     
     fclose(fp);
@@ -500,5 +500,4 @@ void update_reward_score(const char* username, int points_to_add) {
     }
 
 }*/
-
 
