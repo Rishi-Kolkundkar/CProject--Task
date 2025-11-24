@@ -1112,11 +1112,11 @@ int complete_task(const char* username, int task_id) {
         return 0;
         }
     }
+    printf("Task '%s' completed! You earned %d points.\n", data[task_index].title, points_earned);
     free(data);
     fclose(fh);
   
 
-    printf("Task '%s' completed! You earned %d points.\n", data[task_index].title, points_earned);
     return points_earned;
 }
 
@@ -1213,6 +1213,7 @@ void reminders(const char *username){
     }
 
 }
+
 
 
 
