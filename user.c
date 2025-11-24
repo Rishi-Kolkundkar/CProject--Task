@@ -193,7 +193,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sha256_wrapper.h"
+#include "sha256.h"
 
 #define FILE_NAME "users.txt"
 
@@ -209,7 +209,7 @@ int usernameExists(const char *name) {
     FILE *fp = fopen(FILE_NAME, "r");
     if (!fp) return 0;
 
-    char uname[32], pwd[50];
+    char uname[32], pwd[65];
     int r;
 
     while (fscanf(fp, "%s %s %d", uname, pwd, &r) == 3) {
@@ -222,6 +222,23 @@ int usernameExists(const char *name) {
     fclose(fp);
     return 0;
 }
+
+void hash_password(const char* password, char hex_output[65]) {
+    BYTE hash_raw[SHA256_BLOCK_SIZE];
+    SHA256_CTX ctx;
+    
+    // Hash the password
+    sha256_init(&ctx);
+    sha256_update(&ctx, (const BYTE*)password, strlen(password));
+    sha256_final(&ctx, hash_raw);
+
+    // Convert the raw hash to a hexadecimal string
+    for (int i = 0; i < SHA256_BLOCK_SIZE; i++) {
+        sprintf(hex_output + (i * 2), "%02x", hash_raw[i]);
+    }
+    hex_output[64] = '\0';
+}
+
 
 // CREATE USER
 void addUser() {
@@ -248,14 +265,14 @@ void addUser() {
     printf("Enter password: ");
     scanf("%49s", u.password);
     char hashed_pwd[65];
-    hash_password_c(u.password, hashed_pwd, sizeof(hashed_pwd));
+    hash_password(u.password, hashed_pwd);
 
     printf("Enter Date of Birth for security purposes in DDMMYY format: ");
     scanf("%d",&u.DOB);
 
     u.reward = 0;
 
-    fprintf(fp, "%s %s %d\n", u.name, hashed_pwd, u.reward);
+    fprintf(fp, "%s %s %d %d\n", u.name, hashed_pwd, u.reward,u.DOB);
     fclose(fp);
 
     printf("User created.\n");
@@ -269,7 +286,7 @@ void loadUsers(User **list, int *count) {
     }
 
     int c = 0;
-    char a[50], b[50];
+    char a[32], b[65];
     int r;
 
     while (fscanf(fp, "%s %s %d", a, b, &r) == 3)
@@ -301,7 +318,7 @@ int login(char* username_out) {
         printf("Password: ");
         scanf("%49s", input_pass);
 
-        hash_password_c(input_pass, input_pass_hash, sizeof(input_pass_hash));
+        hash_password(input_pass, input_pass_hash);
 
         FILE* fp = fopen("users.txt", "r");
         if (fp == NULL) {

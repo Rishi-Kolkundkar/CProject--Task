@@ -164,7 +164,7 @@ void rotate_task_to_front(Task* tasks, int total, int target_id) {
 
 
 //Functions which actually peform tasks
-
+/*
 int create_task(const char* username, int tid) {
     FILE *fh_op;
     
@@ -269,6 +269,95 @@ void create_tasks(const char* username) {
         }
     }
 }
+*/
+
+
+
+void create_new_tasks(const char* username) {
+    char fname[64];
+    fnamegen(username, fname, sizeof(fname));
+    
+    
+    FILE* fh = fopen(fname, "rb");
+    int total_tasks = 0;
+    Task* tasks = NULL;
+
+    if (fh != NULL) {
+       
+        fread(&total_tasks, sizeof(int), 1, fh);
+        if (total_tasks > 0) {
+            tasks = malloc(total_tasks * sizeof(Task));
+            fread(tasks, sizeof(Task), total_tasks, fh);
+        }
+        fclose(fh);
+    }
+
+
+    int n;
+    printf("How many new tasks to create? ");
+    scanf("%d", &n);
+    clear_input_buffer();
+    if (n <= 0) return;
+
+    int new_total = total_tasks + n;
+    
+    tasks = realloc(tasks, new_total * sizeof(Task));
+
+    for (int i = 0; i < n; i++) {
+        Task* new_task = &tasks[total_tasks + i]; 
+
+        printf("\n--- Creating Task %d of %d ---\n", i + 1, n);
+        
+        new_task->id = total_tasks + i + 1; 
+        strcpy(new_task->owner, username);
+        new_task->status = TASK_PENDING;
+
+        printf("Enter title: ");
+        fgets(new_task->title, sizeof(new_task->title), stdin);
+        new_task->title[strcspn(new_task->title, "\n")] = 0;
+
+        printf("Enter description: ");
+        fgets(new_task->description, sizeof(new_task->description), stdin);
+        new_task->description[strcspn(new_task->description, "\n")] = 0;
+        
+        printf("Enter priority (1-High, 2-Medium, 3-Low): ");
+        scanf("%d", &new_task->priority);
+        clear_input_buffer();
+
+        printf("Personal task? (1=yes, 0=no): ");
+        scanf("%d", &new_task->wtype);
+        clear_input_buffer();
+        
+        while (1) {
+            printf("Enter due date (DD-MM-YYYY): ");
+            scanf("%10s", new_task->due_date);
+            clear_input_buffer();
+            if (is_valid_date(new_task->due_date)) {
+                break;
+            } else {
+                printf("Invalid date format. Please use DD-MM-YYYY.\n");
+            }
+        }
+    }
+
+   
+    fh = fopen(fname, "wb");
+    if (fh == NULL) {
+        printf("Error: Could not save tasks.\n");
+        free(tasks);
+        return;
+    }
+    
+    
+    fwrite(&new_total, sizeof(int), 1, fh);
+   
+    fwrite(tasks, sizeof(Task), new_total, fh);
+    
+    fclose(fh);
+    free(tasks);
+    printf("\nSuccessfully added %d new task(s).\n", n);
+}
+
 
 void rearrange(const char* username){
     char fname[64]; 
@@ -527,8 +616,8 @@ void view_tasks(const char *username){
         for (int day = 1; day<=days_of_month; day++) {
             // Print the day with an asterisk if it has task
             if (has_task[day]) {
-                if(data[i].status==TASK_COMPLETED) printf(GREEN);
-                else if(data[i].status==TASK_OVERDUE) printf(RED);
+                if(data[day].status==TASK_COMPLETED) printf(GREEN);
+                else if(data[day].status==TASK_OVERDUE) printf(RED);
                 else printf(YELLOW);
                 printf( " %3d* ", day);
                 printf(RESET);
@@ -655,7 +744,8 @@ void update_task(const char *username){
         //}
     
     }
-    printf(RESET\n);
+    printf(RESET);
+    printf("\n");
 
     printf("Enter the task number to update: (0 to cancel and exit)\n");
     int task_choice = -1;
@@ -954,9 +1044,9 @@ int complete_task(const char* username, int task_id) {
     char current_day[3], current_month[3], current_year[5];
     current_date(current_day, current_month, current_year);
     
-    if (strncmp(data[i].due_date, current_year, 4) == 0 &&
-                strncmp(data[i].due_date + 5, current_month, 2) == 0 &&
-                strncmp(data[i].due_date + 8, current_day, 2) == 0) {
+    if (strncmp(data[task_index].due_date, current_year, 4) == 0 &&
+                strncmp(data[task_index].due_date + 5, current_month, 2) == 0 &&
+                strncmp(data[task_index].due_date + 8, current_day, 2) == 0) {
         points_earned = 10; // Base points for on-time completion
         if (data[task_index].priority == 1) {
             points_earned += 5; // Bonus for high-priority tasks
