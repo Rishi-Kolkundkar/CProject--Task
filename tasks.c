@@ -584,7 +584,7 @@ void view_tasks(const char *username){
     else if(temp==3){
         int flag = 0;
         bool has_task[32] = {false};
-
+        TaskStatus day_status[32] = {TASK_PENDING};
         for (int i = 0; i < total_tasks; i++) {
             set_status(&data[i]);
             int task_year, task_month, task_day;
@@ -1174,6 +1174,7 @@ void reminders(const char *username){
     }
 
 }
+
 
 
 
