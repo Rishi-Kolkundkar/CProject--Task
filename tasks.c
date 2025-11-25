@@ -195,8 +195,9 @@ void create_new_tasks(const char* username) {
         printf("Invalid input\n");
         printf("How many new tasks to create? ");
     }
+    clear_input_buffer();
     if (n <= 0) return;
-
+    
     int new_total = total_tasks + n;
     
     tasks = realloc(tasks, new_total * sizeof(Task));
@@ -1211,6 +1212,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
