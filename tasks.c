@@ -536,8 +536,7 @@ void view_tasks(const char *username){
 
                 // Check if the task's due date matches current day
                 if (strcmp(str_day_task, days_of_week[day_num]) == 0  && task_year==current_year_int && 
-                    task_month==current_month_int && 
-                    task_day>=current_day_int && task_day<current_day_int + 7)
+                    task_month==current_month_int && task_day<current_day_int + 7)
                 {
                     //if (tasks_on_day == 0) { printf("\n"); }            
                     // Set color based on priority
@@ -626,7 +625,7 @@ void view_tasks(const char *username){
                         if (data[i].priority == 1) printf(RED);
                         else if (data[i].priority == 2) printf(YELLOW);
                         else printf(GREEN);
-                        printf("⦿ [%02d-%02d-%04d] %s\t\t STATUS: %s%s  %s\n", task_day, task_month, task_year, data[i].status == TASK_COMPLETED ? GREEN :
+                        printf("⦿ [%02d-%02d-%04d] %s\tSTATUS: %s%s  %s\n", task_day, task_month, task_year, data[i].status == TASK_COMPLETED ? GREEN :
                        data[i].status == TASK_PENDING   ? YELLOW : RED,
                        data[i].status == TASK_COMPLETED ? "COMPLETED!" : data[i].status == TASK_PENDING ?"PENDING" :"OVERDUE",RESET, data[i].title);
                     }
@@ -1176,6 +1175,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
