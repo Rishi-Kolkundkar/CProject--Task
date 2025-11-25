@@ -228,7 +228,6 @@ void create_new_tasks(const char* username) {
             printf("Enter due date (YYYY-MM-DD): ");
             scanf("%10s", new_task->due_date);
             clear_input_buffer();
-            break;
 
             if (is_valid_date(new_task->due_date)) {
                 break;
@@ -549,15 +548,7 @@ void view_tasks(const char *username){
                     if (data[i].wtype == 1) printf("\t\t\t\t⇥ Type: Personal\n");
                     else printf("\t\t\t\t⇥ Type: Work\n");
 
-                    // Check for overdue
-                    int is_overdue = 0;
-                    if (task_year < current_year_int || (task_year == current_year_int && task_month < current_month_int) || (task_year == current_year_int && task_month == current_month_int && task_day < current_day_int)) {
-                        is_overdue = 1;
-                    }
-
-                    //HERE->KEEP ABOVE VERSION OR BELOW?
                     if(data[i].status==TASK_OVERDUE) printf(RED "                -> STATUS: OVERDUE\n" RESET);
-                    //if (is_overdue) printf(RED "                -> STATUS: OVERDUE\n" RESET);
                     else if(data[i].status==TASK_COMPLETED) printf(GREEN "                -> STATUS: COMPLETED!\n" RESET);
                     else printf(YELLOW "    -> STATUS: PENDING\n" RESET);
                     printf(RESET "\n"); // Add a blank line after each task
@@ -699,12 +690,6 @@ void update_task(const char *username){
     }
     fclose(fh); //Close for reading, will open for writing later
     fh = NULL;
-
-    char current_day[3], current_month[3], current_year[5];
-    current_date(current_day, current_month, current_year);
-    int current_year_int = atoi(current_year);
-    int current_month_int = atoi(current_month);
-    int current_day_int = atoi(current_day);
 
     printf("******************************\n");
 
