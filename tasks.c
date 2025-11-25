@@ -509,7 +509,7 @@ void view_tasks(const char *username){
                 if (data[i].priority == 1) printf(RED);
                 else if (data[i].priority == 2) printf(YELLOW);
                 else printf(GREEN);
-                printf("⦿ %s(%d)                -> STATUS: %s%s%s\n\t⇥ %s\n", data[i].title, data[i].priority, data[i].status==TASK_COMPLETED?GREEN : YELLOW, data[i].status==TASK_COMPLETED? "COMPLETED!" : "PENDING", RESET, data[i].description); //Colour code title based on priority; priority marked as int for now, needs to be changed to string
+                printf("⦿ %s(%d)   -> STATUS: %s%s%s\n\t⇥ %s\n", data[i].title, data[i].priority, data[i].status==TASK_COMPLETED?GREEN : YELLOW, data[i].status==TASK_COMPLETED? "COMPLETED!" : "PENDING", RESET, data[i].description); //Colour code title based on priority; priority marked as int for now, needs to be changed to string
                 if(data[i].wtype==1) printf("\t⇥ Type: Personal\n");
                 else printf("\t⇥ Type: Work\n");
                 flag = 1;
@@ -546,22 +546,17 @@ void view_tasks(const char *username){
                     else printf(GREEN);
                     
                     // Print task details with indentation
-                    printf("\t\t\t  ⦿ %s (%d)\n", data[i].title, data[i].priority);
+                    printf("\t\t\t  ⦿ %s (%d)", data[i].title, data[i].priority);
+                    if(data[i].status==TASK_OVERDUE) printf(RED "   -> STATUS: OVERDUE\n" RESET);
+                    else if(data[i].status==TASK_COMPLETED) printf(GREEN "   -> STATUS: COMPLETED!\n" RESET);
+                    else printf(YELLOW "   -> STATUS: PENDING\n" RESET);
+                    
                     printf("\t\t\t\t⇥ %s\n", data[i].description);
                     if (data[i].wtype == 1) printf("\t\t\t\t⇥ Type: Personal\n");
                     else printf("\t\t\t\t⇥ Type: Work\n");
 
                     // Check for overdue
-                    int is_overdue = 0;
-                    if (task_year < current_year_int || (task_year == current_year_int && task_month < current_month_int) || (task_year == current_year_int && task_month == current_month_int && task_day < current_day_int)) {
-                        is_overdue = 1;
-                    }
-
-                    //HERE->KEEP ABOVE VERSION OR BELOW?
-                    if(data[i].status==TASK_OVERDUE) printf(RED "                -> STATUS: OVERDUE\n" RESET);
-                    //if (is_overdue) printf(RED "                -> STATUS: OVERDUE\n" RESET);
-                    else if(data[i].status==TASK_COMPLETED) printf(GREEN "                -> STATUS: COMPLETED!\n" RESET);
-                    else printf(YELLOW "    -> STATUS: PENDING\n" RESET);
+                    
                     printf(RESET "\n"); // Add a blank line after each task
                     tasks_on_day++;
                 }
@@ -1181,6 +1176,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
