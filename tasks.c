@@ -717,9 +717,9 @@ void update_task(const char *username){
         else printf(GREEN);
 
         printf("[%d] %s ⇥ Due: %02d-%02d-%04d, Priority: %d", i+1, data[i].title, task_day, task_month, task_year, data[i].priority);   //putting priority as int but needs to be changed to high medium low
-        if(data[i].status==TASK_OVERDUE) printf(RED "\t\t-> STATUS: OVERDUE\n" RESET);
-        else if(data[i].status==TASK_COMPLETED) printf(GREEN "\t\t-> STATUS: COMPLETED!\n" RESET);
-        else printf(YELLOW "\t\t-> STATUS: PENDING\n" RESET);
+        if(data[i].status==TASK_OVERDUE) printf(RED "\t-> STATUS: OVERDUE\n" RESET);
+        else if(data[i].status==TASK_COMPLETED) printf(GREEN "\t-> STATUS: COMPLETED!\n" RESET);
+        else printf(YELLOW "\t-> STATUS: PENDING\n" RESET);
 
         
         if(data[i].wtype==1) printf("\t\t Type: Personal\n");
@@ -1175,6 +1175,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
