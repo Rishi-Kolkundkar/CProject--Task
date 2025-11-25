@@ -1,7 +1,11 @@
 /*
  * Originally from: https://github.com/amosnier/sha-256
  * This is free and unencumbered software released into the public domain.
+ * Since Openssl is not easily available on Windows this has been used to hash the passwords and store it safely.
+ *  It is not a part of the project source code, and can be treated as a library for helping hashing functionality
  */
+
+
 #ifndef SHA256_H
 #define SHA256_H
 
