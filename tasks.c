@@ -977,14 +977,49 @@ int complete_task(const char* username) {
     char fname[64];
     fnamegen(username, fname, sizeof(fname));
 
-    // --- Step 1: Read all tasks from the file into memory ---
+   
     FILE* fh = fopen(fname, "rb");
+    if (fh == NULL) {
+        printf("No tasks to rearrange.\n");
+        return 0;
+    }
+
+    int total_tasks = 0;
+    if (fread(&total_tasks, sizeof(int), 1, fh) != 1 || total_tasks == 0) {
+        printf("You have no tasks to rearrange.\n");
+        fclose(fh);
+        return 0;
+    }
+
+    Task* tasks = (Task*)malloc(total_tasks * sizeof(Task));
+    if (tasks == NULL) { fclose(fh);
+         return 0;
+         }
+    if (fread(tasks, sizeof(Task), total_tasks, fh) != total_tasks) {
+        free(tasks); fclose(fh); 
+        return 0;
+    }
+    fclose(fh);
+
+   
+    printf("Your current tasks are:\n");
+    printf(CYAN "%-5s %-20s %-10s\n" RESET, "ID", "Title", "Priority");
+    printf("----------------------------------------\n");
+    for (int i = 0; i < total_tasks; i++) {
+        printf("%-5d %-20s %-10d\n", tasks[i].id, tasks[i].title, tasks[i].priority);
+    }
+    free(tasks);
+    tasks=NULL;
+    printf(RESET);
+
+    // --- Step 1: Read all tasks from the file into memory ---
+    fh = fopen(fname, "rb");
     if (fh == NULL) {
         printf("You have no tasks to complete.\n");
         return 0;
     }
 
-    int total_tasks = 0;
+    total_tasks = 0;
     // Read the total number of tasks
     if (fread(&total_tasks, sizeof(int), 1, fh) != 1 || total_tasks == 0) {
         printf("You have no tasks to complete.\n");
@@ -993,7 +1028,7 @@ int complete_task(const char* username) {
     }
 
     // Allocate memory for all tasks
-    Task* tasks = (Task*)malloc(total_tasks * sizeof(Task));
+    tasks = (Task*)malloc(total_tasks * sizeof(Task));
     if (tasks == NULL) {
         printf("Memory allocation failed.\n");
         fclose(fh);
@@ -1009,7 +1044,7 @@ int complete_task(const char* username) {
     }
     fclose(fh); // Close the file for reading
 
-    // --- Step 2: Get user input ---
+    // Step 2: Get user input
     printf("Enter the ID of the task you wish to complete: ");
     int task_id_to_complete;
     if (scanf("%d", &task_id_to_complete) != 1) {
@@ -1020,7 +1055,7 @@ int complete_task(const char* username) {
     }
     clear_input_buffer();
 
-    // --- Step 3: Find the task and validate its status ---
+    //  Find the task and validate its status
     int task_index = -1;
     for (int i = 0; i < total_tasks; i++) {
         if (tasks[i].id == task_id_to_complete) {
@@ -1041,7 +1076,7 @@ int complete_task(const char* username) {
         return 0; // No points for completing it again
     }
 
-    // --- Step 4: Update status in memory and calculate points ---
+    // Update status in memory and calculate points
     // First, check if the task is overdue BEFORE marking it complete
     set_status(&tasks[task_index]); 
     
@@ -1061,7 +1096,7 @@ int complete_task(const char* username) {
     // Now, permanently mark the task's status as completed in memory
     tasks[task_index].status = TASK_COMPLETED;
 
-    // --- Step 5: Write the entire modified task list back to the file ---
+    // Writing the entire modified task list back to the file
     fh = fopen(fname, "wb");
     if (fh == NULL) {
         printf("CRITICAL ERROR: Could not open file to save changes.\n");
@@ -1077,10 +1112,11 @@ int complete_task(const char* username) {
 
     printf("Task '%s' marked as complete! You earned %d points.\n", tasks[task_index].title, points_earned);
     
-    // --- Step 6: Cleanup ---
+    //Cleanup
     free(tasks);
     return points_earned;
 }
+
 
 void show_reminders(const char *username){
     Task *data = NULL;
@@ -1175,6 +1211,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
