@@ -121,3 +121,31 @@ Here is a breakdown of the functions within each source file.
     Deletes a task by its ID, shifts subsequent tasks in the array, and saves the updated list.
 -   `complete_task(const char* username)`
     Marks a task as `COMPLETED`, calculates reward points based on timeliness and priority, and saves the change.
+
+
+### How to Compile and Run
+
+#### Recommended Setup (for Linux)
+
+This application is best experienced on a Linux-based operating system, as it makes extensive use of ANSI color codes and special characters (like 🔔, 🚨, ⏳) for a richer user interface.
+
+For the best visual experience and to ensure all emoji characters render correctly in your terminal, it is recommended to install the Noto Color Emoji font. You can do this on Debian/Ubuntu-based systems with the following command:
+
+```bash
+sudo apt-get install fonts-noto-color-emoji
+```
+
+#### Compilation and Execution
+
+This project has no external dependencies other than a standard C compiler (like `gcc`).
+
+1.  **Navigate** to the project directory in your terminal.
+2.  **Compile** all the necessary source files with the following command:
+    ```bash
+    gcc -o task_manager main.c user.c tasks.c sha256.c
+    ```
+3.  **Run** the compiled application:
+    ```bash
+    ./task_manager
+    ```
+    (On Windows, you can run `task_manager.exe`, but be aware that some special characters and colors may not display correctly without a modern terminal like Windows Terminal.)
