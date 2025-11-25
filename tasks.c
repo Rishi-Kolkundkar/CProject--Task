@@ -509,7 +509,7 @@ void view_tasks(const char *username){
                 if (data[i].priority == 1) printf(RED);
                 else if (data[i].priority == 2) printf(YELLOW);
                 else printf(GREEN);
-                printf("⦿ %s(%d)   -> STATUS: %s%s%s\n\t⇥ %s\n", data[i].title, data[i].priority, data[i].status==TASK_COMPLETED?GREEN : YELLOW, data[i].status==TASK_COMPLETED? "COMPLETED!" : "PENDING", RESET, data[i].description); //Colour code title based on priority; priority marked as int for now, needs to be changed to string
+                printf("⦿ %s(%d)   %s-> STATUS: %s%s%s\n\t⇥ %s\n", data[i].title, data[i].priority, RESET, data[i].status==TASK_COMPLETED?GREEN : YELLOW, data[i].status==TASK_COMPLETED? "COMPLETED!" : "PENDING", RESET, data[i].description); //Colour code title based on priority; priority marked as int for now, needs to be changed to string
                 if(data[i].wtype==1) printf("\t⇥ Type: Personal\n");
                 else printf("\t⇥ Type: Work\n");
                 flag = 1;
@@ -1175,6 +1175,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
