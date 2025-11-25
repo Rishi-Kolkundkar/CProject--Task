@@ -912,7 +912,7 @@ void delete_task(const char* username){
 
     printf("Your current taks are in priority order: \n\n");
     printf(CYAN "%-5s %-20s %-10s %-8s %-12s %-10s\n" RESET,"ID", "Title", "Priority", "Private", "Due Date", "Owner");
-    printf("-------------------------------------------------------------------------------------------------");
+    printf("-------------------------------------------------------------------------------------------------\n");
     for (int i=0;i<total_tasks;i++){
         Task task = data[i];
         if (task.priority == 1) printf(RED);
@@ -1211,6 +1211,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
