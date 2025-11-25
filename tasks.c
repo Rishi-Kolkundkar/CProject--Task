@@ -190,8 +190,11 @@ void create_new_tasks(const char* username) {
 
     int n;
     printf("How many new tasks to create? ");
-    scanf("%d", &n);
-    clear_input_buffer();
+    while(scanf("%d", &n)!=1){
+        clear_input_buffer();
+        printf("Invalid input\n");
+        printf("How many new tasks to create? ");
+    }
     if (n <= 0) return;
 
     int new_total = total_tasks + n;
@@ -228,7 +231,6 @@ void create_new_tasks(const char* username) {
             printf("Enter due date (YYYY-MM-DD): ");
             scanf("%10s", new_task->due_date);
             clear_input_buffer();
-            break;
 
             if (is_valid_date(new_task->due_date)) {
                 break;
@@ -1179,6 +1181,7 @@ void show_reminders(const char *username){
     }
 
 }
+
 
 
 
